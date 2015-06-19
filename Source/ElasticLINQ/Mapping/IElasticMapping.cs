@@ -24,7 +24,7 @@ namespace ElasticLinq.Mapping
         JToken FormatValue(MemberInfo member, object value);
 
         /// <summary>
-        /// Gets the fully document prefix for a given CLR type. Extending this allows you to change
+        /// Gets the full document prefix for a given CLR type. Extending this allows you to change
         /// the mapping of types names into the prefix used when creating Elasticsearch queries against
         /// fields. For example, using the Couchbase/Elasticsearch adapter yield documents with the
         /// prefix "doc", since it wraps all documents into a "doc" object; similarly, developers may

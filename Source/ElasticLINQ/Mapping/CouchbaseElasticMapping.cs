@@ -45,7 +45,6 @@ namespace ElasticLinq.Mapping
             if (property == null)
                 throw new InvalidOperationException(String.Format(TypeCriteriaMissingExceptionMessage, docType.Name));
 
-            var prefix = GetDocumentMappingPrefix(docType);
             return new ExistsCriteria(GetFieldName(property));
         }
     }
