@@ -41,12 +41,12 @@ namespace ElasticLinq.Mapping
         }
 
         /// <inheritdoc/>
-        public string GetFieldName(string prefix, MemberExpression memberExpression)
+        public string GetFieldName(MemberExpression memberExpression)
         {
             return
                 memberExpression.Member.DeclaringType == typeof(ElasticFields)
                     ? "_" + memberExpression.Member.Name.ToLowerInvariant()
-                    : wrapped.GetFieldName(prefix, memberExpression);
+                    : wrapped.GetFieldName(memberExpression);
         }
 
         /// <inheritdoc/>

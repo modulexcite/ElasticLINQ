@@ -1,7 +1,6 @@
 ﻿// Licensed under the Apache 2.0 License. See LICENSE.txt in the project root for more information.
 
 using ElasticLinq.Mapping;
-using ElasticLinq.Request.Criteria;
 using ElasticLinq.Test.TestSupport;
 using ElasticLinq.Utility;
 using Newtonsoft.Json;
@@ -75,18 +74,14 @@ namespace ElasticLinq.Test.Mapping
         }
 
         [Theory]
-        [InlineData(false, "a.B.c", "a.B.c.GetFieldName")]
-        [InlineData(false, "", "GetFieldName")]
-        [InlineData(false, null, "GetFieldName")]
-        [InlineData(true, "a.B.c", "a.B.c.getFieldName")]
-        [InlineData(true, "", "getFieldName")]
-        [InlineData(true, null, "getFieldName")]
-        public static void GetFieldName(bool camelCaseFieldNames, string prefix, string expected)
+        [InlineData(false, "GetFieldName")]
+        [InlineData(true, "getFieldName")]
+        public static void GetFieldName(bool camelCaseFieldNames, string expected)
         {
             var memberInfo = MethodBase.GetCurrentMethod();
             var mapping = new ElasticMapping(camelCaseFieldNames: camelCaseFieldNames);
 
-            var actual = mapping.GetFieldName(prefix, memberInfo);
+            var actual = mapping.GetFieldName(memberInfo);
 
             Assert.Equal(expected, actual);
         }
@@ -97,7 +92,7 @@ namespace ElasticLinq.Test.Mapping
             var memberInfo = TypeHelper.GetMemberInfo((FormatClass f) => f.NotSoCustom);
             var mapping = new ElasticMapping();
 
-            var actual = mapping.GetFieldName("", memberInfo);
+            var actual = mapping.GetFieldName(memberInfo);
 
             Assert.Equal("CustomPropertyName", actual);
         }
@@ -107,9 +102,9 @@ namespace ElasticLinq.Test.Mapping
         {
             var mapping = new ElasticMapping();
 
-            Assert.Throws<ArgumentNullException>(() => mapping.GetFieldName("", (MemberExpression)null));
-            Assert.Throws<NotSupportedException>(() => mapping.GetFieldName("", Expression.Field(Expression.Constant(new FieldClass { AField = "test" }), "AField")));
-            Assert.Throws<ArgumentNullException>(() => mapping.GetFieldName("", (MemberInfo)null));
+            Assert.Throws<ArgumentNullException>(() => mapping.GetFieldName((MemberExpression)null));
+            Assert.Throws<NotSupportedException>(() => mapping.GetFieldName(Expression.Field(Expression.Constant(new FieldClass { AField = "test" }), "AField")));
+            Assert.Throws<ArgumentNullException>(() => mapping.GetFieldName((MemberInfo)null));
         }
 
         private class SingularTypeName { }

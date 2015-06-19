@@ -54,7 +54,7 @@ namespace ElasticLinq
         public virtual IQueryable<T> Query<T>()
         {
             var prefix = Mapping.GetDocumentMappingPrefix(typeof(T));
-            var provider = new ElasticQueryProvider(Connection, Mapping, Log, RetryPolicy, prefix);
+            var provider = new ElasticQueryProvider(Connection, Mapping, Log, RetryPolicy);
             return new ElasticQuery<T>(provider);
         }
     }

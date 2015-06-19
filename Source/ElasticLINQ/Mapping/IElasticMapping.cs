@@ -52,11 +52,9 @@ namespace ElasticLinq.Mapping
         /// mapping field names in the CLR to field names in Elasticsearch. Typically, these rules
         /// will need to match the serialization rules you use when storing your documents.
         /// </summary>
-        /// <param name="prefix">The prefix to put in front of this field name, if the field is
-        /// an ongoing part of the document search.</param>
         /// <param name="memberExpression">The member expression whose name is required.</param>
         /// <returns>Returns the Elasticsearch field name that matches the member.</returns>
-        string GetFieldName(string prefix, MemberExpression memberExpression);
+        string GetFieldName(MemberExpression memberExpression);
 
         /// <summary>
         /// Gets criteria that can be used to find documents of a particular type. Will be used by

@@ -28,20 +28,20 @@ namespace ElasticLinq.Request.Visitors
         private IElasticMaterializer materializer;
         private CriteriaWithin within = CriteriaWithin.Filter;
 
-        private ElasticQueryTranslator(IElasticMapping mapping, string prefix)
-            : base(mapping, prefix)
+        private ElasticQueryTranslator(IElasticMapping mapping)
+            : base(mapping)
         {
         }
 
-        internal static ElasticTranslateResult Translate(IElasticMapping mapping, string prefix, Expression e)
+        internal static ElasticTranslateResult Translate(IElasticMapping mapping, Expression e)
         {
-            return new ElasticQueryTranslator(mapping, prefix).Translate(e);
+            return new ElasticQueryTranslator(mapping).Translate(e);
         }
 
         private ElasticTranslateResult Translate(Expression e)
         {
             var evaluated = PartialEvaluator.Evaluate(e);
-            var aggregated = FacetExpressionVisitor.Rebind(Mapping, Prefix, evaluated);
+            var aggregated = FacetExpressionVisitor.Rebind(Mapping, evaluated);
 
             if (aggregated.Collected.Count > 0)
                 CompleteFacetTranslation(aggregated);
@@ -163,7 +163,7 @@ namespace ElasticLinq.Request.Visitors
                 materializer = new HighlightElasticMaterializer(materializer);
             }
 
-            searchRequest.Highlight.AddFields(Mapping.GetFieldName(Prefix, bodyExpression));
+            searchRequest.Highlight.AddFields(Mapping.GetFieldName(bodyExpression));
 
             return Visit(source);
         }
@@ -358,7 +358,7 @@ namespace ElasticLinq.Request.Visitors
             var final = Visit(lambda.Body) as MemberExpression;
             if (final != null)
             {
-                var fieldName = Mapping.GetFieldName(Prefix, final);
+                var fieldName = Mapping.GetFieldName(final);
                 var ignoreUnmapped = final.Type.IsNullable(); // Consider a config switch?
                 searchRequest.SortOptions.Insert(0, new SortOption(fieldName, ascending, ignoreUnmapped));
             }
@@ -412,7 +412,7 @@ namespace ElasticLinq.Request.Visitors
         /// <param name="entityParameter">Parameter that references the whole entity.</param>
         private void RebindElasticFieldsAndChainProjector(Expression selectExpression, ParameterExpression entityParameter)
         {
-            var projection = ElasticFieldsExpressionVisitor.Rebind(Prefix, Mapping, selectExpression);
+            var projection = ElasticFieldsExpressionVisitor.Rebind(Mapping, selectExpression);
             var compiled = Expression.Lambda(projection.Item1, entityParameter, projection.Item2).Compile();
             itemProjector = h => compiled.DynamicInvoke(DefaultItemProjector(h), h);
         }
@@ -424,7 +424,7 @@ namespace ElasticLinq.Request.Visitors
         /// <param name="selectExpression">Select expression to re-bind.</param>
         private void RebindPropertiesAndElasticFields(Expression selectExpression)
         {
-            var projection = MemberProjectionExpressionVisitor.Rebind(Prefix, Mapping, selectExpression);
+            var projection = MemberProjectionExpressionVisitor.Rebind(Mapping, selectExpression);
             var compiled = Expression.Lambda(projection.Expression, projection.Parameter).Compile();
             itemProjector = h => compiled.DynamicInvoke(h);
             searchRequest.Fields.AddRange(projection.Collected);

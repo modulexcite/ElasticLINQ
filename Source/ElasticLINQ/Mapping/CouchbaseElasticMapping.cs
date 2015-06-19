@@ -17,7 +17,7 @@ namespace ElasticLinq.Mapping
         /// <summary>
         /// Initializes a new instance of the <see cref="CouchbaseElasticMapping"/> class.
         /// </summary>
-        /// <param name="camelCaseFieldNames">Pass <c>true</c> to automatically camel-case field names (for <see cref="ElasticMapping.GetFieldName(string, System.Reflection.MemberInfo)"/>).</param>
+        /// <param name="camelCaseFieldNames">Pass <c>true</c> to automatically camel-case field names (for <see cref="ElasticMapping.GetFieldName(System.Reflection.MemberInfo)"/>).</param>
         /// <param name="lowerCaseAnalyzedFieldValues">Pass <c>true</c> to automatically convert field values to lower case (for <see cref="ElasticMapping.FormatValue"/>).</param>
         /// <param name="conversionCulture">The culture to use for the lower-casing, camel-casing, and pluralization operations. If <c>null</c>,
         /// uses <see cref="CultureInfo.CurrentCulture"/>.</param>
@@ -46,7 +46,7 @@ namespace ElasticLinq.Mapping
                 throw new InvalidOperationException(String.Format(TypeCriteriaMissingExceptionMessage, docType.Name));
 
             var prefix = GetDocumentMappingPrefix(docType);
-            return new ExistsCriteria(GetFieldName(prefix, property));
+            return new ExistsCriteria(GetFieldName(property));
         }
     }
 }

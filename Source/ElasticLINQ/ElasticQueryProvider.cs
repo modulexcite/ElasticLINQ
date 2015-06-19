@@ -30,8 +30,7 @@ namespace ElasticLinq
         /// <param name="mapping">A mapping to specify how queries and results are translated.</param>
         /// <param name="log">A log to receive any information or debugging messages.</param>
         /// <param name="retryPolicy">A policy to describe how to handle network issues.</param>
-        /// <param name="prefix">A string to use to prefix all Elasticsearch fields with.</param>
-        public ElasticQueryProvider(ElasticConnection connection, IElasticMapping mapping, ILog log, IRetryPolicy retryPolicy, string prefix)
+        public ElasticQueryProvider(ElasticConnection connection, IElasticMapping mapping, ILog log, IRetryPolicy retryPolicy)
         {
             Argument.EnsureNotNull("connection", connection);
             Argument.EnsureNotNull("mapping", mapping);
@@ -42,7 +41,6 @@ namespace ElasticLinq
             Mapping = mapping;
             Log = log;
             RetryPolicy = retryPolicy;
-            Prefix = prefix;
 
             requestProcessor = new ElasticRequestProcessor(connection, mapping, log, retryPolicy);
         }
@@ -52,8 +50,6 @@ namespace ElasticLinq
         internal ILog Log { get; private set; }
 
         internal IElasticMapping Mapping { get; private set; }
-
-        internal string Prefix { get; private set; }
 
         internal IRetryPolicy RetryPolicy { get; private set; }
 
@@ -104,7 +100,7 @@ namespace ElasticLinq
 
         private object ExecuteInternal(Expression expression)
         {
-            var translation = ElasticQueryTranslator.Translate(Mapping, Prefix, expression);
+            var translation = ElasticQueryTranslator.Translate(Mapping, expression);
             var elementType = TypeHelper.GetSequenceElementType(expression.Type);
 
             Log.Debug(null, null, "Executing query against type {0}", elementType);

@@ -46,8 +46,7 @@ namespace ElasticLinq.Test
 
         public QueryInfo ToQueryInfo()
         {
-            var prefix = Context.Mapping.GetDocumentMappingPrefix(typeof(T));
-            var request = ElasticQueryTranslator.Translate(Context.Mapping, prefix, Expression);
+            var request = ElasticQueryTranslator.Translate(Context.Mapping, Expression);
             var formatter = new SearchRequestFormatter(Context.Connection, Context.Mapping, request.SearchRequest);
             return new QueryInfo(formatter.Body, formatter.Uri);
         }

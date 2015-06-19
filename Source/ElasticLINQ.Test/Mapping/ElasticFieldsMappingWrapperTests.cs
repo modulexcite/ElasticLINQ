@@ -55,10 +55,10 @@ namespace ElasticLinq.Test.Mapping
             var member = typeof(ElasticFields).GetProperty(propertyName);
             var memberExpression = Expression.MakeMemberAccess(null, member);
 
-            var result = mapping.GetFieldName("a.b.c", memberExpression);
+            var result = mapping.GetFieldName(memberExpression);
 
             Assert.Equal(expectedValue, result);
-            innerMapping.Received(0).GetFieldName("a.b.c", memberExpression);
+            innerMapping.Received(0).GetFieldName(memberExpression);
         }
 
         [Fact]
@@ -70,9 +70,9 @@ namespace ElasticLinq.Test.Mapping
             var constantExpression = Expression.Constant("string value");
             var memberExpression = Expression.MakeMemberAccess(constantExpression, member);
 
-            mapping.GetFieldName("a.b.c", memberExpression);
+            mapping.GetFieldName(memberExpression);
 
-            innerMapping.Received(1).GetFieldName("a.b.c", memberExpression);
+            innerMapping.Received(1).GetFieldName(memberExpression);
         }
 
         [Fact]

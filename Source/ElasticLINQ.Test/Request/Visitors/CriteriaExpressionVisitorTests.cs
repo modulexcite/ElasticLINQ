@@ -12,11 +12,10 @@ namespace ElasticLinq.Test.Request.Visitors
     // CriteriaExpressionVisitor is a base class that is used by other visitors
     // and is extensively test covered by those subclass tests. This test is for a
     // few error-case paths to ensure maximum code coverage.
-
     class SimpleCriteriaExpressionVisitor : CriteriaExpressionVisitor
     {
-        public SimpleCriteriaExpressionVisitor(IElasticMapping mapping, string prefix)
-            : base(mapping, prefix)
+        public SimpleCriteriaExpressionVisitor(IElasticMapping mapping)
+            : base(mapping)
         {
         }
 
@@ -38,7 +37,7 @@ namespace ElasticLinq.Test.Request.Visitors
 
     public static class CriteriaExpressionVisitorTests
     {
-        private static readonly SimpleCriteriaExpressionVisitor visitor = new SimpleCriteriaExpressionVisitor(new TrivialElasticMapping(), "");
+        private static readonly SimpleCriteriaExpressionVisitor visitor = new SimpleCriteriaExpressionVisitor(new TrivialElasticMapping());
 
         [Fact]
         public static void VisitElasticMethodsMethodCallThrowsNotSupportedForUnknownMethods()
